@@ -401,16 +401,6 @@ function FlowBuilder() {
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center justify-between ml-1">
                     <label className="text-[10px] text-muted-foreground/80 uppercase font-bold font-mono tracking-wider">Final Output</label>
-                    {finalOutput && (
-                      <button 
-                        onClick={handleAutoReverse}
-                        className="px-2 py-0.5 bg-primary/10 hover:bg-primary/20 text-primary rounded outline outline-1 outline-primary/30 transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_oklch(var(--primary)/0.2)] group"
-                        title="Feed output back into input and flip mode"
-                      >
-                        <ArrowRightLeft className="w-3 h-3 group-hover:rotate-180 transition-transform" />
-                        <span className="text-[9px] uppercase font-bold tracking-widest hidden lg:block">Auto-Reverse Flow</span>
-                      </button>
-                    )}
                   </div>
                   
                   <div className="relative">
@@ -443,6 +433,18 @@ function FlowBuilder() {
                   )}
                 </div>
 
+                {/* Massive Auto-Reverse CTA */}
+                {finalOutput && (
+                  <div className="pt-3 border-t border-border/30 mt-4">
+                    <button 
+                      onClick={handleAutoReverse}
+                      className="w-full py-2.5 bg-primary/20 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/50 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_20px_oklch(var(--primary)/0.3)] group"
+                    >
+                      <ArrowRightLeft className="w-4 h-4 group-hover:rotate-180 transition-transform" />
+                      <span className="text-[11px] font-bold uppercase tracking-widest font-mono">1-Click Auto Reverse</span>
+                    </button>
+                  </div>
+                )}
               </div>
             </Panel>
           </ReactFlow>
