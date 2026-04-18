@@ -140,7 +140,7 @@ export const CIPHERS: CipherMap = {
 };
 
 // Dev self-test function
-function selfTest() {
+export function selfTest() {
   const testInput = "Hello World 123! Урок";
   Object.entries(CIPHERS).forEach(([name, cipher]) => {
     try {

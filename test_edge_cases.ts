@@ -10,9 +10,9 @@ function runTest(name: string, fn: () => void) {
     fn();
     console.log(`✅ PASS: ${name}`);
     passed++;
-  } catch (e: any) {
+  } catch (e) {
     console.error(`❌ FAIL: ${name}`);
-    console.error(`   Error: ${e.message}`);
+    console.error(`   Error: ${e instanceof Error ? e.message : String(e)}`);
     failed++;
   }
 }

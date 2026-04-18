@@ -78,6 +78,7 @@ const stats = [
 
 export default function LandingPage() {
   const [isVisible, setIsVisible] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setIsVisible(true), []);
 
   return (
@@ -186,7 +187,7 @@ export default function LandingPage() {
       {/* ═══ FEATURES — minimal 3-card grid ═══ */}
       <section id="features" className="relative py-24 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <p className="text-sm font-mono text-primary mb-3">// FEATURES</p>
+          <p className="text-sm font-mono text-primary mb-3">{"// FEATURES"}</p>
           <h2 className="text-3xl lg:text-4xl font-semibold tracking-tight mb-12">
             What makes CipherStack different.
           </h2>
@@ -224,7 +225,7 @@ export default function LandingPage() {
       {/* ═══ HOW IT WORKS — compact 3-step ═══ */}
       <section id="how-it-works" className="relative py-24 overflow-hidden bg-secondary/30">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <p className="text-sm font-mono text-primary mb-3">// HOW IT WORKS</p>
+          <p className="text-sm font-mono text-primary mb-3">{"// HOW IT WORKS"}</p>
           <h2 className="text-3xl lg:text-4xl font-semibold tracking-tight mb-12">
             Three steps to cascade encryption.
           </h2>

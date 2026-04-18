@@ -21,6 +21,7 @@ export default function BuilderPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), [])
 
   const addNode = (type: string) =>
