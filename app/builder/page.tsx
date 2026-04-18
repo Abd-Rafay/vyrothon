@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { CIPHERS } from '@/lib/ciphers'
 import { PipelineNode, createNode, runPipeline, CIPHER_COLORS } from '@/lib/pipeline'
-import { Download, Upload, Lock } from 'lucide-react'
+import { Download, Upload, Lock, ArrowRightLeft, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 import {
@@ -210,6 +210,12 @@ function FlowBuilder() {
     return () => clearTimeout(t)
   }, [plaintext, pipelineNodes, mode])
 
+  const handleAutoReverse = () => {
+    if (!finalOutput) return
+    setPlaintext(finalOutput)
+    setMode(mode === 'encrypt' ? 'decrypt' : 'encrypt')
+  }
+
   const exportPipeline = () => {
     const data = pipelineNodes.map(({ type, config }) => ({ type, config }))
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
@@ -330,49 +336,113 @@ function FlowBuilder() {
             <Controls showInteractive={false} className="bg-card border-border fill-foreground" />
             <MiniMap nodeColor="oklch(0.7 0.18 170)" maskColor="oklch(0.08 0.015 260 / 0.7)" className="bg-card border-border" />
             {pipelineNodes.length < 3 && (
-              <Panel position="top-center" className="bg-amber-500/10 backdrop-blur-xl border border-amber-500/50 px-6 py-3 rounded-full shadow-[0_0_30px_rgba(245,158,11,0.2)] mt-8 z-50 animate-pulse pointer-events-none">
-                <div className="flex items-center gap-3 text-amber-500 text-xs font-bold tracking-widest uppercase">
-                  <Lock className="w-4 h-4" />
-                  System Locked: Add {3 - pipelineNodes.length} more cipher node{3 - pipelineNodes.length > 1 ? 's' : ''}
+              <Panel position="top-center" className="bg-amber-500/10 backdrop-blur-xl border-2 border-amber-500/60 px-8 py-4 rounded-full shadow-[0_0_50px_rgba(245,158,11,0.3)] mt-8 z-50 animate-pulse pointer-events-none">
+                <div className="flex items-center gap-3 text-amber-500 text-sm font-bold tracking-widest uppercase">
+                  <Lock className="w-5 h-5" />
+                  SYSTEM LOCKED: ADD {3 - pipelineNodes.length} MORE CIPHER NODE{3 - pipelineNodes.length > 1 ? 'S' : ''}
                 </div>
               </Panel>
             )}
             
             {/* System Status HUD */}
-            <Panel position="top-right" className="bg-card/95 backdrop-blur-xl border border-border p-5 rounded-xl shadow-xl mt-4 mr-4 w-72 pointer-events-none hidden md:block">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/50">
-                <span className={`w-2 h-2 rounded-full ${pipelineNodes.length >= 3 && plaintext ? 'bg-green-500 animate-pulse' : 'bg-primary'}`} />
-                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono">System HUD</span>
+            <Panel position="top-right" className="bg-card/95 backdrop-blur-xl border border-primary/20 p-5 rounded-2xl shadow-[0_10_40px_rgba(0,0,0,0.5)] mt-4 mr-4 w-80 md:w-96 hidden md:flex flex-col z-50 transition-all pointer-events-auto">
+              
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-border/50">
+                <div className="flex items-center gap-2">
+                  <span className={`w-2.5 h-2.5 rounded-full ${pipelineNodes.length >= 3 && plaintext ? 'bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]' : 'bg-primary shadow-[0_0_10px_var(--primary)]'}`} />
+                  <span className="text-sm font-bold uppercase tracking-wider text-primary font-mono cursor-default">Global Dashboard</span>
+                </div>
+                
+                {/* Mode Toggle Button from HUD */}
+                <div className="flex bg-secondary/50 p-0.5 rounded-md border border-border/50 cursor-pointer">
+                  <button onClick={() => setMode('encrypt')} className={`px-2 py-1 text-[10px] uppercase font-bold rounded transition-colors ${mode === 'encrypt' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>Encrypt</button>
+                  <button onClick={() => setMode('decrypt')} className={`px-2 py-1 text-[10px] uppercase font-bold rounded transition-colors ${mode === 'decrypt' ? 'bg-accent text-accent-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>Decrypt</button>
+                </div>
               </div>
               
               <div className="space-y-4">
-                <div>
-                  <p className="text-[10px] text-muted-foreground/60 uppercase font-mono mb-1.5 tracking-wider">Source</p>
-                  <p className="text-xs font-mono truncate text-foreground/90 bg-secondary/30 p-1.5 rounded">{plaintext || <span className="italic text-muted-foreground/50">Awaiting input...</span>}</p>
+                
+                {/* Type-able Input */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] text-muted-foreground/80 uppercase font-bold font-mono tracking-wider ml-1">Active Input</label>
+                  <textarea 
+                    value={plaintext}
+                    onChange={(e) => setPlaintext(e.target.value)}
+                    placeholder="Type here to start..."
+                    rows={2}
+                    className="w-full text-sm font-mono text-foreground bg-secondary/30 p-2.5 rounded-xl border border-border focus:border-primary focus:ring-1 focus:ring-primary/50 outline-none resize-none transition-all placeholder:text-muted-foreground/30"
+                  />
                 </div>
                 
-                <div>
-                  <p className="text-[10px] text-muted-foreground/60 uppercase font-mono mb-1.5 tracking-wider">Chain ({pipelineNodes.length})</p>
-                  <div className="flex flex-wrap gap-1.5 bg-secondary/30 p-1.5 rounded min-h-[30px] items-center">
+                {/* Pipeline Chain */}
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between ml-1">
+                    <label className="text-[10px] text-muted-foreground/80 uppercase font-bold font-mono tracking-wider">Pipeline Route</label>
+                    <span className="text-[10px] text-muted-foreground font-mono">{pipelineNodes.length}/3 Nodes Req</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1 bg-secondary/30 p-2 rounded-xl border border-border/50 min-h-[44px] items-center">
                     {pipelineNodes.length === 0 ? (
-                      <span className="text-xs italic text-muted-foreground/50 font-mono">Empty pipeline</span>
+                      <span className="text-xs italic text-muted-foreground/50 font-mono w-full text-center">Empty pipeline</span>
                     ) : (
                       pipelineNodes.map((n, i) => (
                         <div key={i} className="flex items-center">
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${CIPHER_COLORS[n.type]?.badge || 'bg-secondary'}`}>
+                          <span className={`text-[10px] px-2 py-1 rounded-md font-bold shadow-sm border border-black/20 uppercase tracking-wide ${CIPHER_COLORS[n.type]?.badge || 'bg-secondary'}`}>
                             {CIPHERS[n.type]?.label.split(' ')[0]}
                           </span>
-                          {i < pipelineNodes.length - 1 && <span className="text-muted-foreground/40 text-[10px] mx-1">→</span>}
+                          {i < pipelineNodes.length - 1 && <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/40 mx-0.5" />}
                         </div>
                       ))
                     )}
                   </div>
                 </div>
 
-                <div>
-                  <p className="text-[10px] text-muted-foreground/60 uppercase font-mono mb-1.5 tracking-wider">Output</p>
-                  <p className={`text-xs font-mono truncate bg-secondary/30 p-1.5 rounded ${finalOutput ? (mode === 'encrypt' ? 'text-primary' : 'text-accent') : 'text-muted-foreground/50 italic'}`}>{finalOutput || '—'}</p>
+                {/* Live Output */}
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between ml-1">
+                    <label className="text-[10px] text-muted-foreground/80 uppercase font-bold font-mono tracking-wider">Final Output</label>
+                    {finalOutput && (
+                      <button 
+                        onClick={handleAutoReverse}
+                        className="px-2 py-0.5 bg-primary/10 hover:bg-primary/20 text-primary rounded outline outline-1 outline-primary/30 transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_oklch(var(--primary)/0.2)] group"
+                        title="Feed output back into input and flip mode"
+                      >
+                        <ArrowRightLeft className="w-3 h-3 group-hover:rotate-180 transition-transform" />
+                        <span className="text-[9px] uppercase font-bold tracking-widest hidden lg:block">Auto-Reverse Flow</span>
+                      </button>
+                    )}
+                  </div>
+                  
+                  <div className="relative">
+                    <textarea 
+                      readOnly
+                      value={finalOutput}
+                      placeholder="Result appears here..."
+                      rows={2}
+                      className={`w-full text-sm font-mono bg-background/50 p-2.5 rounded-xl border focus:outline-none resize-none transition-all placeholder:text-muted-foreground/30 ${
+                        finalOutput 
+                          ? (mode === 'encrypt' ? 'text-primary border-primary/50' : 'text-accent border-accent/50') 
+                          : 'text-muted-foreground/50 italic border-border/50'
+                      }`}
+                    />
+                    {finalOutput && (
+                      <div className="absolute right-2 bottom-2 flex justify-end">
+                        <button 
+                          onClick={() => navigator.clipboard.writeText(finalOutput)} 
+                          className="bg-card text-[10px] px-2 py-1 rounded shadow-sm border border-border text-muted-foreground hover:text-foreground hover:border-primary/50 uppercase font-mono tracking-wider transition-colors"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  {finalOutput && (
+                    <div className="flex items-center mt-0.5 px-1">
+                      <span className="text-[9px] text-green-500 font-mono flex items-center gap-1.5 uppercase font-bold tracking-wider"><span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_5px_#22c55e]" /> Execution Success</span>
+                    </div>
+                  )}
                 </div>
+
               </div>
             </Panel>
           </ReactFlow>

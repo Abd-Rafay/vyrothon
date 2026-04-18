@@ -7,10 +7,10 @@ export function InputNode({ data }: { data: { plaintext: string; setPlaintext: (
         <div className="flex items-center justify-between mb-2 relative">
           <p className="text-sm font-mono text-primary">{"// SOURCE"}</p>
           {data.isReady && !data.plaintext && (
-            <div className="absolute -top-14 right-0 bg-primary text-primary-foreground px-4 py-2 rounded-xl shadow-[0_0_30px_oklch(var(--primary)/0.6)] border border-white/30 text-xs font-bold animate-bounce whitespace-nowrap flex items-center gap-2 z-50">
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+            <div className="absolute -top-16 right-0 bg-primary text-primary-foreground px-6 py-3 rounded-2xl shadow-[0_0_40px_oklch(var(--primary)/0.8)] border-2 border-white/40 text-sm font-bold animate-bounce whitespace-nowrap flex items-center gap-3 z-50">
+              <span className="w-3 h-3 rounded-full bg-white animate-pulse" />
               ACTION REQUIRED: TYPE INPUT
-              <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-primary border-r border-b border-white/30 rotate-45" />
+              <div className="absolute -bottom-2 right-8 w-4 h-4 bg-primary border-r-2 border-b-2 border-white/40 rotate-45" />
             </div>
           )}
         </div>
