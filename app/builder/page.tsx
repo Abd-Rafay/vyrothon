@@ -6,6 +6,8 @@ import { CIPHERS } from '@/lib/ciphers'
 import { PipelineNode, createNode, runPipeline, CIPHER_COLORS } from '@/lib/pipeline'
 import { Download, Upload, Lock, ArrowRightLeft, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { useTheme } from 'next-themes'
 
 import {
   ReactFlow,
@@ -49,6 +51,7 @@ function FlowBuilder() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   const { fitView, setCenter } = useReactFlow()
+  const { resolvedTheme } = useTheme()
 
   // React Flow state
   const [rfNodes, setRfNodes] = useState<Node[]>([])
@@ -261,7 +264,9 @@ function FlowBuilder() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={exportPipeline} className="gap-1.5 text-xs bg-transparent border-border hover:bg-secondary/50">
+          <ThemeToggle />
+          <div className="w-px h-5 bg-border/50 mx-1 hidden sm:block" />
+          <Button variant="outline" size="sm" onClick={exportPipeline} className="gap-1.5 text-xs bg-transparent border-border hover:bg-secondary/50 hidden sm:flex">
             <Download className="w-3.5 h-3.5" /> Export
           </Button>
           <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="gap-1.5 text-xs bg-transparent border-border hover:bg-secondary/50">
@@ -324,7 +329,7 @@ function FlowBuilder() {
             edges={edges}
             onNodesChange={onNodesChange}
             nodeTypes={NODE_TYPES}
-            colorMode="dark"
+            colorMode={resolvedTheme === 'dark' ? 'dark' : 'light'}
             fitView
             fitViewOptions={{ padding: 0.5, minZoom: 0.5, maxZoom: 1 }}
             panOnScroll={true}

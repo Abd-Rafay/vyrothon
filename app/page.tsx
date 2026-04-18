@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { ArrowRight, Lock, Layers, Eye } from "lucide-react";
 
 /* ─── ASCII Wave canvas (from Nexus template) ─── */
@@ -101,11 +102,14 @@ export default function LandingPage() {
               <a href="#how-it-works" className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-secondary/50">How It Works</a>
             </div>
 
-            <Link href="/builder">
-              <Button size="sm" className="bg-foreground hover:bg-foreground/90 text-background">
-                Launch Builder
-              </Button>
-            </Link>
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              <Link href="/builder">
+                <Button size="sm" className="bg-foreground hover:bg-foreground/90 text-background">
+                  Launch Builder
+                </Button>
+              </Link>
+            </div>
           </div>
         </nav>
       </header>
