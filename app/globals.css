@@ -170,4 +170,33 @@
       linear-gradient(90deg, oklch(0.7 0.18 170 / 0.03) 1px, transparent 1px);
     background-size: 60px 60px;
   }
+
+  /* React Flow Nexus Theme Overrides */
+  .react-flow__edge-path {
+    stroke-width: 2 !important;
+  }
+  
+  .react-flow__controls button {
+    background-color: var(--card) !important;
+    border-color: var(--border) !important;
+    border-bottom: 1px solid var(--border) !important;
+    color: var(--foreground) !important;
+    fill: var(--foreground) !important;
+  }
+  
+  .react-flow__controls button:hover {
+    background-color: var(--secondary) !important;
+  }
+  
+  .react-flow__minimap {
+    background-color: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important;
+  }
+  
+  .react-flow__handle {
+    width: 10px !important;
+    height: 10px !important;
+    border-width: 2px !important;
+  }
 }
