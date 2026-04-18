@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Ignore docs & generated files
+*.pdf
+*.txt
+*.py
+*.md
+
+# DO NOT ignore these specific docs
+!README.md
+!readme.md
+!CHANGELOG.md
+!changelog.md
